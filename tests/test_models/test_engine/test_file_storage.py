@@ -107,3 +107,34 @@ class test_fileStorage(unittest.TestCase):
         from models.engine.file_storage import FileStorage
         print(type(storage))
         self.assertEqual(type(storage), FileStorage)
+
+    def test_new_with_kwargs(self):
+        """ New object is correctly added with keyword arguments """
+        name = "My New Object"
+        description = "This is a test object"
+        new = BaseModel(name=name, description=description)
+        self.assertEqual(new.name, name)
+        self.assertEqual(new.description, description)
+
+    def test_save_with_kwargs(self):
+        """ Object with arguments is saved correctly """
+        name = "My New Object"
+        description = "This is a test object"
+        new = BaseModel(name=name, description=description)
+        new.save()
+        self.assertTrue(os.path.exists('file.json'))
+        with open('file.json') as f:
+            data = json.load(f)
+        self.assertEqual(data[new.to_dict()['id']]['name'], name)
+        self.assertEqual(data[new.to_dict()['id']]['description'], description)
+
+    def test_reload_with_kwargs(self):
+        """ Object with arguments is loaded correctly """
+        name = "My New Object"
+        description = "This is a test object"
+        new = BaseModel(name=name, description=description)
+        new.save()
+        storage.reload()
+        loaded_obj = storage.all().get(new.to_dict()['id'])
+        self.assertEqual(loaded_obj.name, name)
+        self.assertEqual(loaded_obj.description, description)
