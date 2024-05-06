@@ -2,6 +2,7 @@
 """ Console Module """
 import cmd
 import sys
+import uuid
 from datetime import datetime
 from models.base_model import BaseModel
 from models.__init__ import storage
@@ -135,10 +136,11 @@ class HBNBCommand(cmd.Cmd):
                     kwargs[k] = eval(v)
             except Exception:
                 pass
+
         new_instance = HBNBCommand.classes[args[0]](**kwargs)
-        storage.save()
+        new_instance.id = str(uuid.uuid4())  # Generate a unique ID
+        storage.new(new_instance)
         print(new_instance)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
