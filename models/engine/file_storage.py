@@ -19,6 +19,9 @@ class FileStorage:
 
     def save(self):
         """Saves storage dictionary to file"""
+        file_path = os.environ.get('../file.json')
+        if not file_path:
+            raise Exception("FILE_PATH env variable not set")
         with open(FileStorage.__file_path, 'w') as f:
             temp = {}
             temp.update(FileStorage.__objects)
